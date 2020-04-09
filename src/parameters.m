@@ -24,6 +24,8 @@ classdef parameters
         dT(1,1) double = 1
         % misc
         w_prec(1,1) double = 7.292115146706979e-5 
+        % plotting
+        plot(1,1) struct
     end
     
     properties (Dependent)
@@ -36,6 +38,17 @@ classdef parameters
             obj.utc2gps = -obj.gps2utc;
             obj.gps2tt  = 32.184 + obj.gps2tai;
             obj.tt2gps  = - obj.gps2tt;
+            % plot position every <plot_density_s> seconds
+            obj.plot.plot_density_s = 30;
+            % keep the last <> seconds of positions on plot
+            obj.plot.view_last_s = 200;
+            % cell of handles for plotted line objects
+            obj.plot.handles = cell(1,1);
+            % counter for the number of points on the plot
+            obj.plot.counter = 1;
+            % true/false
+            obj.plot.show_camera   = false;
+            obj.plot.camera_handle = cell(1,1);
         end
     end
     
