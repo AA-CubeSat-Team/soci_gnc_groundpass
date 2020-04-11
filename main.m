@@ -46,7 +46,7 @@ addpath('tools/')
 addpath('TLEs/')
 
 % simulation options
-MET_end  = 2400.0;      % end MET in [s]
+MET_end  = 5400.0;      % end MET in [s]
 theta    = 56/2;         % camera FoV half angle
 elev_deg = 10;           % elevation above ground station where s/c is visible
 lat_T    = 47.655548;    % ground station latitude
@@ -64,8 +64,8 @@ propagator.dT = 1;
 propagator.make_plot = true;
 propagator.params.plot.plot_density_s = 60;
 propagator.params.plot.show_camera = false;
-propagator.params.plot.view_num_points = 30;
-propagator.enable_logging(true);
+propagator.params.plot.view_num_points = 200;
+propagator.enable_logging(false);
 
 % initialize figure
 propagator.initialize_plot(elev_deg);
