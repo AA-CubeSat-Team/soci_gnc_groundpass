@@ -1,4 +1,4 @@
-function FLAG = sgp4(obj)
+function sgp4(obj)
 %SGP4   Orbit Propagator
 % Based on "SpaceTrack Report #3: Models for Propagation of NORAD Element
 % Sets", Hoots & Roerhrich, 1980.
@@ -80,13 +80,12 @@ FALSE   = 0;
 r_E     = 6378.137;         % Earth's equatorial radius [km]
 A_30    = -XJ3*a_E^3;       % see nomenclature
 VKMPS   = XKMPER/60;        % Convert ER/min velocities to km/s
-J2000   = 2451545.0;        % Julian date for J2000
-FLAG    = 0;
+FLAG    = int32(0);
 pos_invalid     = [ XKMPER; XKMPER; XKMPER + 500 ];
 vel_invalid     = [ 0.0; 0.0; 0.0 ];
 
 % Line 1
-epoch_year  = orbit_tle(1);
+epoch_year  = orbit_tle(1); %#ok (unused)
 epoch_JD    = orbit_tle(2);
 BS          = orbit_tle(3);
 
@@ -101,16 +100,16 @@ n_o     = orbit_tle(9)*2*pi/XMNPDA;  % Revs per time unit (MNM)
 % Hooks on orbital elements (catch #1)
 % eccentricity
 if( (e_o >= 1) || (e_o <= 0) )
-    pos_teme_km       = pos_invalid;
-    vel_teme_kmps     = vel_invalid;
-    FLAG = -1; 
+    obj.sgp4_flag       = int32(-1);
+    obj.pos_teme_km     = pos_invalid;
+    obj.vel_teme_kmps   = vel_invalid;
     return;
 end
 % mean motion (catch #1)
 if( n_o == 0 )
-    pos_teme_km       = pos_invalid;
-    vel_teme_kmps     = vel_invalid;
-    FLAG = -1; 
+    obj.sgp4_flag       = int32(-1);
+    obj.pos_teme_km     = pos_invalid;
+    obj.vel_teme_kmps   = vel_invalid;
     return;
 end
 
@@ -134,7 +133,7 @@ r_p     = r_E*(a_o_pp*(1 - e_o) - a_E); % Radius of perigee
 % Check low altitude condition                                    
 if( a_o_pp*(1-e_o)/a_E < (220/XKMPER + a_E) )
     lowAlt  = TRUE;
-    FLAG    = 1;
+    FLAG    = int32(1);
 else
     lowAlt  = FALSE;
 end
@@ -157,9 +156,9 @@ xi      = 1/(a_o_pp - s); % cannot be zero since s_star = s ~= a_o_pp
 b_o     = (1 - e_o^2)^(0.5);
 eta     = a_o_pp*e_o*xi; % cannot be zero, but could be 1.
 if( eta == 1 ) % check that (1-eta^2) cannot be zero (catch #2)
-    pos_teme_km     = pos_invalid;
-    vel_teme_kmps   = vel_invalid;
-    FLAG = -1;
+    obj.sgp4_flag       = -2;
+    obj.pos_teme_km     = pos_invalid;
+    obj.vel_teme_kmps   = vel_invalid;
     return;
 end
 C_2     = QOMS4*xi^4*n_o_pp*(1-eta^2)^(-7/2)*((a_o_pp*(1 + ...
@@ -226,9 +225,9 @@ else
 end
 
 if( (a == 0) || (e >= 1) ) % catch divide by zero conditions (catch #3)
-    pos_teme_km       = pos_invalid;
-    vel_teme_kmps     = vel_invalid;
-    FLAG = -1;
+    obj.sgp4_flag       = int32(-3);
+    obj.pos_teme_km     = pos_invalid;
+    obj.vel_teme_kmps   = vel_invalid;
     return;
 end
 b       = sqrt(1-e^2);
@@ -251,9 +250,9 @@ e_L     = (a_xN^2 + a_yN^2)^(1/2);
 p_L     = a*(1 - e_L^2);
 r       = a*(1 - ecE);
 if( (r == 0) || (p_L == 0) ) % (catch #4)
-    pos_teme_km       = pos_invalid;
-    vel_teme_kmps     = vel_invalid;
-    FLAG = -1;
+    obj.sgp4_flag       = int32(-4);
+    obj.pos_teme_km     = pos_invalid;
+    obj.vel_teme_kmps   = vel_invalid;
     return;
 end
 r_dot   = XKE*sqrt(a)*esE/r;
@@ -284,8 +283,15 @@ U       = M.*sin(u_k) + N.*cos(u_k);
 V       = M.*cos(u_k) - N.*sin(u_k);
 
 % Find position and velocity in km & km/s
+obj.sgp4_flag       = FLAG;
 obj.pos_teme_km     = r_k.*U.*XKMPER;
 obj.vel_teme_kmps   = (r_dot_k.*U + r_f_dot_k.*V).*(VKMPS);
+orbit_propagation.check_sgp4_flag(FLAG);
+
+% write to file
+if (obj.logging)
+    fprintf(obj.log_file_id,obj.log_file_spec(1,1),obj.MET_s,FLAG);
+end
 
 end
 

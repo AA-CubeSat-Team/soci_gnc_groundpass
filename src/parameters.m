@@ -1,6 +1,4 @@
 classdef parameters
-    %UNTITLED2 Summary of this class goes here
-    %   Detailed explanation goes here
     
     properties
         % time parameters
@@ -24,6 +22,7 @@ classdef parameters
         dT(1,1) double = 1
         % misc
         w_prec(1,1) double = 7.292115146706979e-5 
+        mu_earth_m3ps2 (1,1) double = 398600.4418e9
         % plotting
         plot(1,1) struct
     end
@@ -40,8 +39,8 @@ classdef parameters
             obj.tt2gps  = - obj.gps2tt;
             % plot position every <plot_density_s> seconds
             obj.plot.plot_density_s = 30;
-            % keep the last <> seconds of positions on plot
-            obj.plot.view_last_s = 200;
+            % keep the last <view_num_points> points on plot
+            obj.plot.view_num_points = 200;
             % cell of handles for plotted line objects
             obj.plot.handles = cell(1,1);
             % counter for the number of points on the plot

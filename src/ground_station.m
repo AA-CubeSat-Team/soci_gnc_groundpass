@@ -8,9 +8,7 @@ classdef ground_station < handle
     end
     
     methods
-        function obj = ground_station()
-        end
-        function obj = init(obj,lat_deg,lon_deg,alt_m)
+        function init(obj,lat_deg,lon_deg,alt_m)
             obj.lat_deg     = lat_deg;
             obj.lon_deg     = lon_deg;
             obj.alt_m       = alt_m;
