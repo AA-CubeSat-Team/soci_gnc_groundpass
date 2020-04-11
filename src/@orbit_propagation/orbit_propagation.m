@@ -58,6 +58,9 @@ classdef orbit_propagation < handle
             obj.logging = enable;
             rn = datetime;
             datetime_fmt = 'yy_mm_dd_HH_MM_SS';
+            if ~exist('logs', 'dir')
+                mkdir('logs')
+            end
             obj.log_file = strcat('logs/',obj.TLE,'_',...
                                         datestr(rn,datetime_fmt),'.txt');
             obj.log_file_head = strcat(' MET [s]  flag  lat [dg]  lon [dg]',...
