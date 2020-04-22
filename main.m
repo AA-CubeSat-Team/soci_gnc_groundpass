@@ -46,12 +46,15 @@ addpath('tools/')
 addpath('TLEs/')
 
 % simulation options
-MET_end  = 5400.0;      % end MET in [s]
+MET_end  = 10^12;        % end MET in [s]
 theta    = 56/2;         % camera FoV half angle
-elev_deg = 10;           % elevation above ground station where s/c is visible
+elev_deg = 15;           % elevation above ground station where s/c is visible
 lat_T    = 47.655548;    % ground station latitude
 lon_T    = -122.303200;  % ground station longitude
 alt_T    = 0.0;          % ground station altitude
+
+% display or data collection
+display    = true;
 
 % instantiate an orbit propagation object
 propagator = orbit_propagation('ISS_TLE.txt');
@@ -77,7 +80,9 @@ while(true)
     propagator.sgp4();
         
     % update plot
-    propagator.update_plot(theta);
+    if(display)
+        propagator.update_plot(theta);
+    end
         
     % check for a ground pass
     propagator.check_groundpass(elev_deg);
