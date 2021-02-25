@@ -5,6 +5,8 @@ classdef parameters
         dut1(1,1) double = 0
         sec2day(1,1) double = 1/86400
         day2sec(1,1) double = 86400
+        hr2day(1,1) double  = 1/24
+        day2hr(1,1) double  = 24
         JDJ2000(1,1) double = 2451545.0
         JD2cent(1,1) double = 1/36525
         cent2JD(1,1) double = 36525

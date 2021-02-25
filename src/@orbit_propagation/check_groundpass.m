@@ -23,6 +23,8 @@ if (s_ell>=0)
     if (abs(ell)>(min_elevation) && ~obj.passing)
         % get current time stamp
         JD      = obj.JD_J2000_utc + obj.params.JDJ2000;
+        % correct for local time relative to UTC
+        JD = JD + obj.gs.TZ * obj.params.hr2day;
         time    = get_timestamp(JD);
         % set passing == true and record the current MET at pass begin
         obj.passing = true;
@@ -36,6 +38,8 @@ if (s_ell>=0)
         
         % get current time stamp
         JD      = obj.JD_J2000_utc + obj.params.JDJ2000;
+        % correct for local time relative to UTC
+        JD = JD + obj.gs.TZ * obj.params.hr2day;
         time    = get_timestamp(JD);
         % set passing == false and record the duration of pass
         obj.passing = false;

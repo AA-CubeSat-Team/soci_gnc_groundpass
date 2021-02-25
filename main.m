@@ -46,37 +46,39 @@ addpath('tools/')
 addpath('TLEs/')
 
 % simulation options
-MET_end  = 86400.0;      % end MET in [s]
+MET_end  = 7*86400.0;      % end MET in [s]
 theta    = 56/2;         % camera FoV half angle
-elev_deg = 10;           % elevation above ground station where s/c is visible
+elev_deg = 15;           % elevation above ground station where s/c is visible
 lat_T    = 47.655548;    % ground station latitude
 lon_T    = -122.303200;  % ground station longitude
 alt_T    = 0.0;          % ground station altitude
+TZ       = -8;           % timezone referenced to UTC. Seattle is UTC-8.
 
-% define an orbit & creates a "test_TLE.txt" file in `ROOT/TLEs/` that the 
-% simulator can then use like normal
-YMDHMS = [ 2020; 01; 29; 0; 0; 0 ];  % Year-Month-Day-Hour-Min-Sec of epoch
-INC    = 90;                         % orbit inclination [deg]
+% Uncomment the code below to define an orbit & create a "test_TLE.txt" file in
+% `ROOT/TLEs/` that the simulator can then use like normal
+
+YMDHMS = [ 2021; 01; 01; 0; 0; 0 ];  % Year-Month-Day-Hour-Min-Sec of epoch
+INC    = 107.6;                         % orbit inclination [deg]
 RAAN   = 150;                        % right ascension of ascending node [deg]
-ECC    = 0.00008;                    % orbit eccentricity
+ECC    = 0.0008;                    % orbit eccentricity
 AOP    = 130;                        % argument of perigee [deg]
-MNA    = 230;                        % mean anomaly [deg]
-SMA    = 6378.137 + 400;             % semimajor axis [km]
+MNA    = 0;                        % mean anomaly [deg]
+SMA    = 6378.137 + 600;             % semimajor axis [km]
 tle_gen(YMDHMS,INC,RAAN,ECC,AOP,MNA,SMA);
 
 % instantiate an orbit propagation object
 propagator = orbit_propagation('test_TLE.txt');
 
 % initialize the ground station
-propagator.gs.init(lat_T,lon_T,alt_T);
+propagator.gs.init(lat_T,lon_T,alt_T,TZ);
 
 % set custom propagator options
 propagator.dT = 1;
 propagator.make_plot = false;
-propagator.params.plot.plot_density_s = 60;
+propagator.params.plot.plot_density_s = 30;
 propagator.params.plot.show_camera = false;
-propagator.params.plot.view_num_points = 200;
-propagator.enable_logging(true);
+propagator.params.plot.view_num_points = 100;
+propagator.enable_logging(false);
 
 % initialize figure
 propagator.initialize_plot(elev_deg);

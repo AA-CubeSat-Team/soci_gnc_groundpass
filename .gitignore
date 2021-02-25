@@ -1,3 +1,5 @@
 logs/*
 *.m~
 *.fig
+*.slx.autosave
+*.png

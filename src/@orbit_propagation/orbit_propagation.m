@@ -87,6 +87,15 @@ classdef orbit_propagation < handle
         post_process(obj)
         % function to initialize the plot
         function initialize_plot(obj,elev_deg)
+            % initialize printout
+            fprintf('--------------------------------------------------\n');
+            fprintf('   _       _     ___  _____ \n')
+            fprintf('  / \\     / \\   |       |   \n')
+            fprintf(' /___\\   /___\\  |       |   \n')
+            fprintf('/     \\ /     \\ |___    |   \n\n')
+            fprintf('Orbital Pass Predictor Tool: ')
+            fprintf(' All times are UTC%+2d\n',obj.gs.TZ)
+            fprintf('By: T. P. Reynolds\n')
             % get data for field of view circle
             gs_pos_ecef_m = obj.gs.pos_ecef_m;
             ortho_dir = gs_pos_ecef_m./norm(gs_pos_ecef_m);
